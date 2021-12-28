@@ -51,10 +51,10 @@ body {
     font-weight: lighter;
     &:focus {
       outline: none;
-      color: $r;
-      font-weight: lighter;
-      caret-color: $r;
-      border-bottom: solid 1px $r;
+      //   color: $r;
+      //   font-weight: lighter;
+      //   caret-color: $r;
+      //   border-bottom: solid 1px $r;
     }
   }
   .btn {
@@ -82,24 +82,29 @@ body {
     }
   }
   .copied {
-    color: $r;
+    color: $bace;
     margin: 1rem;
+    text-transform: capitalize;
+    font-weight: bold;
     font-size: 2rem;
+    background-color: $black;
   }
   .error {
     display: flex;
     //   flex-wrap: wrap;
     color: #5c5c58;
     width: 100%;
-    justify-content: space-between;
+    justify-content:center;
     font-weight: bold;
     .q1 {
+      color: $black;
       font-style: italic;
       font-size: 2rem;
       margin-right: 1rem;
       transform: translateY(-1rem);
     }
     .q2 {
+      color: $black;
       font-style: italic;
       font-size: 2rem;
       margin-left: 1rem;

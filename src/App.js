@@ -6,7 +6,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       copy: false,
-      invalid:"",
+      invalid: "",
       status: false,
       data: '',
       api_data: [],
@@ -32,8 +32,8 @@ export default class App extends Component {
       fetch(`https://api.shrtco.de/v2/shorten?url=${this.state.data}`)
         .then(res => res.json())
         .then((resp) => {
-          if (!resp.ok) { throw Error(resp.error), this.setState({invalid:resp.error,btnTxt:"Submit"}) }
-          else{
+          if (!resp.ok) { throw Error(resp.error), this.setState({ invalid: resp.error, btnTxt: "Submit" }) }
+          else {
             this.setState({
               api_data: resp.result,
               status: true,
@@ -54,7 +54,7 @@ export default class App extends Component {
       status: false,
       copy: false,
       btnTxt: "Submit",
-      invalid:"",
+      invalid: "",
     })
   }
 
@@ -67,7 +67,7 @@ export default class App extends Component {
     })
     this.setState({ msg: "copied!" })
     this.show = setTimeout(() => {
-      this.setState({ msg: ""})
+      this.setState({ msg: "" })
     }, 2000);
   }
 
@@ -75,7 +75,6 @@ export default class App extends Component {
     const { status } = this.state;
     const { api_data } = this.state;
     return (
-
       <div className="main" >
         <div className="txt">
           <span className="spanOne">S</span>
@@ -96,11 +95,10 @@ export default class App extends Component {
         </form>
         <br />
         <span className="copied">{this.state.msg}</span>
-        {!this.state.invalid=="" ? (
-        <span className="error"> <span className="q1">" </span>{this.state.invalid}<span className="q2"> "</span></span>) : (<></>)}
+        {!this.state.invalid == "" ? (
+          <span className="error"> <span className="q1">" </span>{this.state.invalid}<span className="q2"> "</span></span>) : (<></>)}
         {/* <span>{api_data.short_link}</span> */}
       </div>
-
     )
   }
 }
