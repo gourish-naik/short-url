@@ -6,9 +6,9 @@ export default class App extends Component {
     super(props);
     this.state = {
       copy: false,
-      disable:false,
+      invalid:"",
       status: false,
-      data: 'js.org',
+      data: '',
       api_data: [],
       msg: "",
       btnTxt: "Submit"
@@ -16,52 +16,49 @@ export default class App extends Component {
     // this.press = this.press.bind(this);
 
   }
-//time variable
+  //time variable
   show;
-//event on enter keypressed
-  press=(e)=>{
-      if (e.keycode === 13) {
-      this.ShortMe();
-    }
-  }
 
-//fetching 
+  //fetching 
 
-  ShortMe = () => {
-    this.setState({disable:true})
-    if(this.state.data.length==0){
+  ShortMe = (p) => {
+    p.preventDefault();
+    this.setState({ disable: true })
+    if (this.state.data.length === 0) {
       alert("enter url");
     }
-    else{
-    this.setState({ btnTxt: "Fetching..." })
-    fetch(`https://api.shrtco.de/v2/shorten?url=${this.state.data}`)
-      .then(res => res.json())
-      .then(results => {
-        this.setState({
-          api_data: results.result,
-          status: true,
-          disable:false,
+    else {
+      this.setState({ btnTxt: "Fetching..." })
+      fetch(`https://api.shrtco.de/v2/shorten?url=${this.state.data}`)
+        .then(res => res.json())
+        .then((resp) => {
+          if (!resp.ok) { throw Error(resp.error), this.setState({invalid:resp.error,btnTxt:"Submit"}) }
+          else{
+            this.setState({
+              api_data: resp.result,
+              status: true,
+            })
+          }
         })
-        console.log(results);
-      })
-      .catch(e => {
-        this.setState({ data: '', status: false });
-        console.log(e);
-      })
+        .catch(e => {
+          this.setState({ data: '', status: false })
+          console.log(e);
+        })
     }
   }
-//read user input
+  //read user input
 
   userInput = (e) => {
     this.setState({
       data: e.target.value,
       status: false,
       copy: false,
-      btnTxt:"Submit"
+      btnTxt: "Submit",
+      invalid:"",
     })
   }
 
-// copy to clipboard 
+  // copy to clipboard 
 
   copyMe = () => {
     navigator.clipboard.writeText(this.state.api_data.short_link)
@@ -70,7 +67,7 @@ export default class App extends Component {
     })
     this.setState({ msg: "copied!" })
     this.show = setTimeout(() => {
-      this.setState({ msg: "" })
+      this.setState({ msg: ""})
     }, 2000);
   }
 
@@ -84,19 +81,23 @@ export default class App extends Component {
           <span className="spanOne">S</span>
           <span className="spanTwo">horten/<span className="spanThree">url</span></span>
         </div>
-        {!status ?
-          (<>
-            <input type="input" className="input" value={this.state.data}  placeholder="example.xyz" onChange={this.userInput} />
-            <button className={this.state.btnTxt==="Fetching..." ? "btn-f" : "btn"} onClick={this.ShortMe} disabled={this.state.disable}>{this.state.btnTxt}</button>
-          </>)
-          :
-          (<>
-            <input type="input" className="input" value={api_data.short_link} onChange={this.userInput} />
-            <button className="btn" onClick={this.copyMe}>Copy URL</button>
-          </>)
-        }
+        <form onSubmit={this.ShortMe}>
+          {!status ?
+            (<>
+              <input type="input" className="input" value={this.state.data} placeholder="example.xyz" onChange={this.userInput} />
+              <input type="submit" className={this.state.btnTxt === "Fetching..." ? "btn-f" : "btn"} onClick={this.ShortMe} value={this.state.btnTxt} />
+            </>)
+            :
+            (<>
+              <input type="input" className="input" value={api_data.short_link} onChange={this.userInput} />
+              <input type="submit" className="btn" onClick={this.copyMe} value="Copy URL" />
+            </>)
+          }
+        </form>
         <br />
         <span className="copied">{this.state.msg}</span>
+        {!this.state.invalid=="" ? (
+        <span className="error"> <span className="q1">" </span>{this.state.invalid}<span className="q2"> "</span></span>) : (<></>)}
         {/* <span>{api_data.short_link}</span> */}
       </div>
 
