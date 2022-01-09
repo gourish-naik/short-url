@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import "./App.scss"
+
 
 export default class App extends Component {
   constructor(props) {
@@ -14,11 +14,9 @@ export default class App extends Component {
       btnTxt: "Submit"
     }
     // this.press = this.press.bind(this);
-
   }
   //time variable
-  show;
-
+  // show;
   //fetching 
 
   ShortMe = (p) => {
@@ -34,9 +32,13 @@ export default class App extends Component {
         .then((resp) => {
           if (!resp.ok) { throw Error(resp.error), this.setState({ invalid: resp.error, btnTxt: "Submit" }) }
           else {
+            // this.setState({
+            //   newLink:resp.result.short_link,
+            // })
             this.setState({
-              api_data: resp.result,
               status: true,
+              api_data: [...this.state.api_data, resp.result.short_link],
+              data: ""
             })
           }
         })
@@ -45,9 +47,10 @@ export default class App extends Component {
           console.log(e);
         })
     }
+    // sessionStorage.setItem("link",this.state.newLink)
   }
-  //read user input
 
+  //read user input
   userInput = (e) => {
     this.setState({
       data: e.target.value,
@@ -60,20 +63,20 @@ export default class App extends Component {
 
   // copy to clipboard 
 
-  copyMe = () => {
-    navigator.clipboard.writeText(this.state.api_data.short_link)
-    this.setState({
-      copy: true
-    })
-    this.setState({ msg: "copied!" })
-    this.show = setTimeout(() => {
-      this.setState({ msg: "" })
-    }, 2000);
+  copyMe = (e) => {
+    navigator.clipboard.writeText(this.state.api_data)
+    console.log();
+    // this.setState({
+    //   copy: true
+    // })
+    // this.setState({ msg: "copied!" })
+    // this.show = setTimeout(() => {
+    //   this.setState({ msg: "" })
+    // }, 2000);
   }
 
   render() {
     const { status } = this.state;
-    const { api_data } = this.state;
     return (
       <div className="main" >
         <div className="txt">
@@ -88,7 +91,7 @@ export default class App extends Component {
             </>)
             :
             (<>
-              <input type="input" className="input" value={api_data.short_link} onChange={this.userInput} />
+              <input type="input" className="input" value={this.state.data} placeholder="example.xyz" onChange={this.userInput} />
               <input type="submit" className="btn" onClick={this.copyMe} value="Copy URL" />
             </>)
           }
@@ -98,6 +101,19 @@ export default class App extends Component {
         {!this.state.invalid == "" ? (
           <span className="error"> <span className="q1">" </span>{this.state.invalid}<span className="q2"> "</span></span>) : (<></>)}
         {/* <span>{api_data.short_link}</span> */}
+        <div className="link-list">
+          <ul>
+            {this.state.api_data.map((link, i) => {
+              return (
+                <li key={i}>
+                  <span className="given-link"></span>
+                  <span className="short-link">{link}</span>
+                  <button className="btn" onClick={() => { alert('You clicked' + link) }} style={{margin:"5px 2rem"}}>copy</button>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </div>
     )
   }
